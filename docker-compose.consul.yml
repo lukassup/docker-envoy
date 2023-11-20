@@ -29,7 +29,7 @@ services:
 
   consul-envoy:
     image: hashicorp/consul:1.17
-    command: agent -bind=0.0.0.0 -retry-join=172.18.0.100 -enable-local-script-checks -config-dir=/etc/consul.d/
+    command: agent -retry-join=172.18.0.100 -enable-local-script-checks -config-dir=/etc/consul.d/
     volumes:
       - ./consul.d/envoy.json:/etc/consul.d/consul.json:ro
     network_mode: 'service:envoy'
@@ -41,7 +41,6 @@ services:
     image: hashicorp/consul:1.17
     ports:
       - 8500:8500/tcp
-    #command: agent -server -ui -bootstrap-expect=1 -bind=0.0.0.0 -client=0.0.0.0 -dns-port=53 -recursor=1.1.1.1 -enable-local-script-checks
     command: agent -server -ui -bootstrap-expect=1 -client=0.0.0.0 -dns-port=53 -recursor=1.1.1.1 -enable-local-script-checks
     networks:
       net-demo:
@@ -59,7 +58,6 @@ services:
 
   consul-echo1: &consul-echo
     image: hashicorp/consul:1.17
-    #command: agent -bind=0.0.0.0 -retry-join=172.18.0.100 -enable-local-script-checks -config-dir=/etc/consul.d/
     command: agent -retry-join=172.18.0.100 -enable-local-script-checks -config-dir=/etc/consul.d/
     volumes:
       - ./consul.d/echo.json:/etc/consul.d/echo.json:ro

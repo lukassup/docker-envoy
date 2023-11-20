@@ -1,0 +1,102 @@
+
+version: '3.8'
+
+networks:
+  net-demo:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.18.0.0/24
+
+services:
+  envoy:
+    hostname: envoy-01
+    image: envoyproxy/envoy:v1.28-latest
+    command: [--config-path, /etc/envoy.yml]
+    volumes:
+      - ./envoy.yml:/etc/envoy.yml:ro
+    ports:
+      - 80:80/tcp
+      - 443:443/tcp
+      - 127.0.0.1:9901:9901/tcp
+    dns:
+     - 172.18.0.100 # Use Consul DNS-SD
+    networks:
+      net-demo: {}
+    depends_on:
+      - consul
+
+  consul-envoy:
+    image: hashicorp/consul:1.17
+    command: agent -bind=0.0.0.0 -retry-join=172.18.0.100 -enable-local-script-checks -config-dir=/etc/consul.d/
+    volumes:
+      - ./consul.d/envoy.json:/etc/consul.d/consul.json:ro
+    network_mode: 'service:envoy'
+    depends_on:
+      - envoy
+
+  consul:
+    hostname: consul-01
+    image: hashicorp/consul:1.17
+    ports:
+      - 8500:8500/tcp
+    #command: agent -server -ui -bootstrap-expect=1 -bind=0.0.0.0 -client=0.0.0.0 -dns-port=53 -recursor=1.1.1.1 -enable-local-script-checks
+    command: agent -server -ui -bootstrap-expect=1 -client=0.0.0.0 -dns-port=53 -recursor=1.1.1.1 -enable-local-script-checks
+    networks:
+      net-demo:
+        ipv4_address: 172.18.0.100
+
+  #--- pod1
+  echo1: &echo
+    hostname: echo-01
+    image: hashicorp/http-echo
+    command: '-listen=:8080 -text=1'
+    networks:
+      net-demo:
+        aliases:
+          - echo
+
+  consul-echo1: &consul-echo
+    image: hashicorp/consul:1.17
+    #command: agent -bind=0.0.0.0 -retry-join=172.18.0.100 -enable-local-script-checks -config-dir=/etc/consul.d/
+    command: agent -retry-join=172.18.0.100 -enable-local-script-checks -config-dir=/etc/consul.d/
+    volumes:
+      - ./consul.d/echo.json:/etc/consul.d/echo.json:ro
+    network_mode: 'service:echo1'
+    depends_on:
+      - consul
+  #---
+
+  #--- pod2
+  echo2:
+    <<: *echo
+    hostname: echo-02
+    command: '-listen=:8080 -text=2'
+
+  consul-echo2:
+    <<: *consul-echo
+    network_mode: 'service:echo2'
+  #---
+
+  #--- pod3
+  echo3:
+    <<: *echo
+    hostname: echo-03
+    command: '-listen=:8080 -text=3'
+
+  consul-echo3:
+    <<: *consul-echo
+    network_mode: 'service:echo3'
+  #---
+
+  #--- pod4
+  echo4:
+    <<: *echo
+    hostname: echo-04
+    command: '-listen=:8080 -text=4'
+
+  consul-echo4:
+    <<: *consul-echo
+    network_mode: 'service:echo4'
+  #---

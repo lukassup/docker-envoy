@@ -1,0 +1,16 @@
+{
+  "services": [
+    {
+      "name": "envoy",
+      "checks": [
+        {
+          "id": "envoy-health",
+          "name": "HTTP service: envoy",
+          "http": "http://localhost:9901/ready",
+          "interval": "1s",
+          "timeout": "1s"
+        }
+      ]
+    }
+  ]
+}

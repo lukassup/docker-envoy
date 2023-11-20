@@ -1,0 +1,16 @@
+{
+  "services": [
+    {
+      "name": "echo",
+      "checks": [
+        {
+          "id": "echo-health",
+          "name": "HTTP service: echo",
+          "http": "http://localhost:8080/health",
+          "interval": "1s",
+          "timeout": "1s"
+        }
+      ]
+    }
+  ]
+}

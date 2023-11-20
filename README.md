@@ -2,9 +2,14 @@
 
 Envoy demo with Docker
 
+
 1. Start containers in compose file
     ```sh
     docker compose up -d
+    ```
+    or with Consul SD
+    ```sh
+    docker compose -f docker-compose.consul.yml up -d
     ```
 1. Make requests to proxy
     ```sh
@@ -26,3 +31,7 @@ Envoy demo with Docker
     ```sh
     while n=$(shuf -i1-4 -n1); do docker compose stop echo${n}; sleep 1; docker compose start echo${n}; sleep 1; done
     ```
+1. Run load test
+   ```sh
+   wrk -t12 -c400 -d60s http://localhost/
+   ```

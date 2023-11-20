@@ -10,6 +10,17 @@ networks:
         - subnet: 172.18.0.0/24
 
 services:
+  consul:
+    hostname: consul-01
+    image: hashicorp/consul:1.17
+    ports:
+      - 8500:8500/tcp
+    command: agent -server -ui -bootstrap-expect=1 -client=0.0.0.0 -dns-port=53 -recursor=1.1.1.1 -enable-local-script-checks
+    networks:
+      net-demo:
+        ipv4_address: 172.18.0.100
+
+  #--- envoy
   envoy:
     hostname: envoy-01
     image: envoyproxy/envoy:v1.28-latest
@@ -27,7 +38,7 @@ services:
     depends_on:
       - consul
 
-  consul-envoy:
+  consul-envoy: &consul-agent
     image: hashicorp/consul:1.17
     command: agent -retry-join=172.18.0.100 -enable-local-script-checks -config-dir=/etc/consul.d/
     volumes:
@@ -35,16 +46,7 @@ services:
     network_mode: 'service:envoy'
     depends_on:
       - envoy
-
-  consul:
-    hostname: consul-01
-    image: hashicorp/consul:1.17
-    ports:
-      - 8500:8500/tcp
-    command: agent -server -ui -bootstrap-expect=1 -client=0.0.0.0 -dns-port=53 -recursor=1.1.1.1 -enable-local-script-checks
-    networks:
-      net-demo:
-        ipv4_address: 172.18.0.100
+  #---
 
   #--- pod1
   echo1: &echo
@@ -56,14 +58,11 @@ services:
         aliases:
           - echo
 
-  consul-echo1: &consul-echo
-    image: hashicorp/consul:1.17
-    command: agent -retry-join=172.18.0.100 -enable-local-script-checks -config-dir=/etc/consul.d/
+  consul-echo1:
+    <<: *consul-agent
     volumes:
       - ./consul.d/echo.json:/etc/consul.d/echo.json:ro
     network_mode: 'service:echo1'
-    depends_on:
-      - consul
   #---
 
   #--- pod2
@@ -73,7 +72,9 @@ services:
     command: '-listen=:8080 -text=2'
 
   consul-echo2:
-    <<: *consul-echo
+    <<: *consul-agent
+    volumes:
+      - ./consul.d/echo.json:/etc/consul.d/echo.json:ro
     network_mode: 'service:echo2'
   #---
 
@@ -84,7 +85,9 @@ services:
     command: '-listen=:8080 -text=3'
 
   consul-echo3:
-    <<: *consul-echo
+    <<: *consul-agent
+    volumes:
+      - ./consul.d/echo.json:/etc/consul.d/echo.json:ro
     network_mode: 'service:echo3'
   #---
 
@@ -95,6 +98,8 @@ services:
     command: '-listen=:8080 -text=4'
 
   consul-echo4:
-    <<: *consul-echo
+    <<: *consul-agent
+    volumes:
+      - ./consul.d/echo.json:/etc/consul.d/echo.json:ro
     network_mode: 'service:echo4'
   #---

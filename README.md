@@ -18,6 +18,10 @@ Envoy demo with Docker
     ```sh
     curl -sSLD/dev/stderr http://localhost:9901/stats
     ```
+1. Verify load balancing algorithms
+    ```sh
+    for (( c=1; c<=1000; c++ )); do curl -sS http://localhost; done | sort | uniq -c
+    ```
 1. Run chaos monkey
     ```sh
     while n=$(shuf -i1-4 -n1); do docker compose stop echo${n}; sleep 1; docker compose start echo${n}; sleep 1; done

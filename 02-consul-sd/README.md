@@ -1,5 +1,33 @@
 # Using statically defined backends with Consul DNS-SD
 
+```mermaid
+graph TB
+    subgraph echo_cluster
+        direction LR
+        subgraph echo-01
+            direction TB
+            consul-echo1 --> |health/http| echo1
+        end
+        subgraph echo-02
+            direction TB
+            consul-echo2 --> |health/http| echo2
+        end
+        subgraph echo-03
+            direction TB
+            consul-echo3 --> |health/http| echo3
+        end
+        subgraph echo-04
+            direction TB
+            consul-echo4 --> |health/http| echo4
+        end
+    end
+
+    consul -->|dns-sd| envoy
+    consul-echo1 & consul-echo2 & consul-echo3 & consul-echo4 --> |serf| consul
+    envoy -->|http/8080| echo1 & echo2 & echo3 & echo4
+    client -->|http/80| envoy
+```
+
 1. Start Docker containers
     ```command
     % docker compose up -d

@@ -1,0 +1,23 @@
+---
+resources:
+- '@type': type.googleapis.com/envoy.config.cluster.v3.Cluster
+  name: echo
+  type: STRICT_DNS
+  dns_lookup_family: V4_ONLY
+  lb_policy: LEAST_REQUEST
+  health_checks:
+    - http_health_check:
+        path: /health
+      timeout: '1s'
+      interval: '1s'
+      unhealthy_threshold: 1
+      healthy_threshold: 1
+  load_assignment:
+    cluster_name: local
+    endpoints:
+    - lb_endpoints:
+      - endpoint:
+          address:
+            socket_address:
+              address: echo  # backend DNS
+              port_value: 8080

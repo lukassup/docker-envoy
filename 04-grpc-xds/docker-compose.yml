@@ -1,0 +1,49 @@
+---
+version: '3.8'
+
+networks:
+  net-demo: {}
+
+services:
+  envoy:
+    image: envoyproxy/envoy:dev
+    command: [--config-path, /etc/envoy.yml]
+    ports:
+      - 80:80/tcp
+      #- 443:443/tcp
+      - 127.0.0.1:9901:9901/tcp
+    volumes:
+      - ./envoy.yml:/etc/envoy.yml:ro
+    networks:
+      net-demo: {}
+
+  envoy-xds:
+    build:
+      context: .
+      target: golang-control-plane
+    command: /usr/local/bin/example
+    healthcheck:
+      test: nc -zv localhost 18000
+    networks:
+      net-demo: {}
+
+  echo1: &echo
+    image: hashicorp/http-echo
+    command: ['-listen=:8080', '-text=1']
+    networks:
+      net-demo:
+        aliases:
+          - echo  # backend DNS
+
+  echo2:
+    <<: *echo
+    command: ['-listen=:8080', '-text=2']
+
+  echo3:
+    <<: *echo
+    command: ['-listen=:8080', '-text=3']
+
+  echo4:
+    <<: *echo
+    command: ['-listen=:8080', '-text=4']
+

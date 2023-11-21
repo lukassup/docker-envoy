@@ -1,7 +1,10 @@
 # docker-envoy
 
-Envoy demo with Docker
-
+Envoy demos
+- [Static backends - basic](/01-basic)
+- [Static backends - Consul DNS-SD](/02-consul-sd)
+- [Dynamic backends - xDS from local files](/03-filesystem-xds)
+- [Dynamic backends - xDS via gRPC APIs (control-plane)](/04-grpc-xds)
 
 1. Start containers in compose file
     ```sh

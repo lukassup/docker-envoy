@@ -16,6 +16,10 @@ graph TD;
     envoy -->|http/8080| echo4;
 ```
 
+1. Start Docker containers
+    ```command
+    docker compose up -d
+    ```
 1. Verify `echo` cluster is added via xDS API
     ```command
     % curl -sSLD/dev/stderr http://localhost:9901/clusters | grep added_via_api
@@ -28,4 +32,8 @@ graph TD;
     transfer-encoding: chunked
 
     echo::added_via_api::true
+    ```
+1. Cleanup Docker containers
+    ```command
+    docker compose down --remove-orphans --volumes
     ```

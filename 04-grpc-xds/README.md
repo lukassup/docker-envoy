@@ -23,6 +23,10 @@ graph TD;
     envoy -->|http/8080| echo4;
 ```
 
+1. Build and start Docker containers
+    ```command
+    docker compose up -d --build
+    ```
 1. Verify `xds_cluster` is defined from `static_resources` and `echo_cluster` cluster is added via xDS
     ```command
     % curl -sSLD/dev/stderr 0:9901/clusters | grep added_via_api
@@ -36,4 +40,8 @@ graph TD;
 
     echo_cluster::added_via_api::true
     xds_cluster::added_via_api::false
+    ```
+1. Cleanup Docker containers
+    ```command
+    docker compose down --remove-orphans --volumes --rmi local
     ```

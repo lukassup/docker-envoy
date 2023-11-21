@@ -29,7 +29,7 @@ services:
       - ./envoy.yml:/etc/envoy.yml:ro
     ports:
       - 80:80/tcp
-      - 443:443/tcp
+      #- 443:443/tcp
       - 127.0.0.1:9901:9901/tcp
     dns:
      - 172.18.0.100 # Use Consul DNS-SD

@@ -20,7 +20,7 @@
 1. View Envoy listeners
     ```command
     % curl -sSLD/dev/stderr http://localhost:9901/listeners
-  ```
+    ```
 1. View Envoy clusters (aka backends)
     ```command
     % curl -sSLD/dev/stderr http://localhsot:9901/clusters

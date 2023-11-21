@@ -1,5 +1,21 @@
 # Using statically defined backends
 
+```mermaid
+graph TD;
+    subgraph echo_cluster
+    echo1;
+    echo2;
+    echo3;
+    echo4;
+    end
+
+    client -->|http/80| envoy;
+    envoy -->|http/8080| echo1;
+    envoy -->|http/8080| echo2;
+    envoy -->|http/8080| echo3;
+    envoy -->|http/8080| echo4;
+```
+
 1. Start Docker containers
     ```command
     % docker compose up -d

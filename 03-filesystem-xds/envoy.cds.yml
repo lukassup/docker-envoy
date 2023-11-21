@@ -10,6 +10,7 @@ resources:
         path: /health
       timeout: '1s'
       interval: '1s'
+      no_traffic_interval: '1s' # start health checking eagerly
       unhealthy_threshold: 1
       healthy_threshold: 1
   load_assignment:

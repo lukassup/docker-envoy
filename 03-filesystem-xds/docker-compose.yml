@@ -6,7 +6,7 @@ networks:
 
 services:
   envoy:
-    image: envoyproxy/envoy:dev
+    image: envoyproxy/envoy:v1.28-latest
     command: [--config-path, /etc/envoy.yml]
     ports:
       - 80:80/tcp

@@ -7,10 +7,6 @@ Envoy demo with Docker
     ```sh
     docker compose up -d
     ```
-    or with Consul SD
-    ```sh
-    docker compose -f docker-compose.consul.yml up -d
-    ```
 1. Make requests to proxy
     ```sh
     watch -d -n1 -- curl -sSLD/dev/stderr http://localhost

@@ -4,18 +4,23 @@
 
 ```mermaid
 graph TD;
-    client -->|http/80| envoy;
-
     subgraph xds_cluster
-    envoy-xds -->|grpc/18000| envoy;
+    envoy-xds;
     end
 
     subgraph echo_cluster
+    echo1;
+    echo2;
+    echo3;
+    echo4;
+    end
+
+    client -->|http/80| envoy;
+    envoy -->|grpc/18000| envoy-xds;
     envoy -->|http/8080| echo1;
     envoy -->|http/8080| echo2;
     envoy -->|http/8080| echo3;
     envoy -->|http/8080| echo4;
-    end
 ```
 
 1. Verify `xds_cluster` is defined from `static_resources` and `echo_cluster` cluster is added via xDS

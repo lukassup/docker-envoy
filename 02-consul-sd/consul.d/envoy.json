@@ -2,6 +2,7 @@
   "services": [
     {
       "name": "envoy",
+      "port": 80,
       "checks": [
         {
           "id": "envoy-health",

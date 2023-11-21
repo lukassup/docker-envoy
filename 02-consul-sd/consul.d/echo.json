@@ -2,6 +2,7 @@
   "services": [
     {
       "name": "echo",
+      "port": 8080,
       "checks": [
         {
           "id": "echo-health",

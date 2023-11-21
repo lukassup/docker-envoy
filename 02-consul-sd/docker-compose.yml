@@ -42,7 +42,7 @@ services:
     image: hashicorp/consul:1.17
     command: agent -retry-join=172.18.0.100 -enable-local-script-checks -config-dir=/etc/consul.d/
     volumes:
-      - ./consul.d/envoy.json:/etc/consul.d/consul.json:ro
+      - ./consul.d/envoy.json:/etc/consul.d/envoy.json:ro
     network_mode: 'service:envoy'
     depends_on:
       - envoy

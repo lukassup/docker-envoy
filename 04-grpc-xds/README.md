@@ -2,6 +2,21 @@
 
 [Example xDS gRPC server used here is from envoyproxy/go-control-plane](https://github.com/envoyproxy/go-control-plane/tree/main/internal/example)
 
+```mermaid
+graph TD;
+    client -->|http/80| envoy;
+
+    subgraph xds_cluster
+    envoy-xds -->|grpc/18000| envoy;
+    end
+
+    subgraph echo_cluster
+    envoy -->|http/8080| echo1;
+    envoy -->|http/8080| echo2;
+    envoy -->|http/8080| echo3;
+    envoy -->|http/8080| echo4;
+    end
+```
 
 1. Verify `xds_cluster` is defined from `static_resources` and `echo_cluster` cluster is added via xDS
     ```command
